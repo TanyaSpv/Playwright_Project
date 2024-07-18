@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { faker } from '@faker-js/faker';
 
 test('has title', async ({ page }) => {
   await page.goto('https://sephora.ca/');
@@ -7,12 +8,16 @@ test('has title', async ({ page }) => {
   await expect(page).toHaveTitle(/Sephora/);
 });
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test('navigate to registration page', async ({ page }) => {
+  await page.goto('https://www.sephora.com/ca/en/');
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+  await page.getByRole('button', { name: 'Sign In for FREE Shipping 🚚' }).click();
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+  await page.getByRole('button', { name: 'Create Account' }).click();
+
+  await expect(page.locator("#email")).toBeVisible();
+
+  await page.locator("#email").fill(faker.internet.email());
+
+  await page.locator(".css-1eg024x.eanm77i0").click();
 });
