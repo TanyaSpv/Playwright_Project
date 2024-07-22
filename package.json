@@ -12,6 +12,10 @@
     "@types/node": "^20.14.11"
   },
   "dependencies": {
-    "@faker-js/faker": "^8.4.1"
+    "@faker-js/faker": "^8.4.1",
+    "dotenv": "^16.4.5",
+    "playwright": "^1.45.3",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }
