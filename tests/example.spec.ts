@@ -1,23 +1,31 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
+import dotenv from 'dotenv';
+const stealth = require('puppeteer-extra-plugin-stealth')();
+const { chromium } = require('playwright-extra');
 
-test('has title', async ({ page }) => {
-  await page.goto('https://sephora.ca/');
+// Load the stealth plugin and use defaults
+chromium.use(stealth);
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Sephora/);
+// Read from default ".env" file.
+dotenv.config();
+
+
+test.beforeEach(async ({ page }) => {
+  await page.goto('https://www.uniqlo.com/ca/en/');
+  await page.waitForTimeout(3000);
+  await page.keyboard.press("Escape");
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByPlaceholder('Enter a valid email').fill(`${process.env.EMAIL}`);
+  await page.getByLabel('Password Password must be at').fill(`${process.env.PASSWORD}`);
+  await page.locator('[data-test="login-button"]').click();
 });
 
-test('navigate to registration page', async ({ page }) => {
-  await page.goto('https://www.sephora.com/ca/en/');
+test('searching for a keyboard', async ({ page }) => {
+  await page.getByRole('button', { name: 'Search' }).click();
+  await page.getByPlaceholder('Search by keyword').fill('hats');
 
-  await page.getByRole('button', { name: 'Sign In for FREE Shipping 🚚' }).click();
-
-  await page.getByRole('button', { name: 'Create Account' }).click();
-
-  await expect(page.locator("#email")).toBeVisible();
-
-  await page.locator("#email").fill(faker.internet.email());
-
-  await page.locator(".css-1eg024x.eanm77i0").click();
+  await page.keyboard.press("Enter");
+  await page.waitForLoadState();
+  await expect(page.getByRole('link', { name: 'CASHMERE KNITTED BEANIE' })).toBeVisible();
 });
