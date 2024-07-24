@@ -29,7 +29,7 @@ test("searching for a hat", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("Selecting womens T-shirts and filtering and sorting them", async ({
+test("Selecting womens T-shirts and sorting them by price", async ({
   page,
 }) => {
   await page.getByRole("link", { name: "women" }).hover();
@@ -66,3 +66,36 @@ test("Selecting womens T-shirts and filtering and sorting them", async ({
 
   expect(firstItemValue).toBeLessThanOrEqual(lastItemValue);
 });
+
+
+test("Selecting womens T-shirts and filtering", async ({
+  page,
+}) => {
+  test.slow();
+  await page.getByRole("link", { name: "women" }).hover();
+  await page
+    .locator("a")
+    .filter({ hasText: /^T-shirts$/ })
+    .first()
+    .click();
+    await page.locator('[data-test="filter-by-size"]').click();
+    await page.locator('[data-test="filter-M"]').getByText('M').click();
+ 
+    await page.locator('[data-test="filter-by-colour"]').click();
+    await page.locator('[data-test="filter-WHITE"] label div').click();
+
+    await page.locator('[data-test="filter-by-price"]').click();
+    await page.locator('label').filter({ hasText: '$20 - $' }).click();
+
+        // Verify filter 'M' is selected
+   const sizeFilterSelected = await page.locator('.fr-flitem.col6.right').nth(1);
+   expect(sizeFilterSelected).toContainText("XXS-XXL");
+
+   const priceFilterSelected = await page.locator('label').filter({ hasText: '$20 - $' }).isChecked();
+   expect(priceFilterSelected).toBe(true);
+       
+   await page.locator('[data-test="filters-clear"]').click()  
+      
+  
+  });
+    
