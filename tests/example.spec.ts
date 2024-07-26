@@ -99,3 +99,54 @@ test("Selecting womens T-shirts and filtering", async ({
   
   });
     
+test("Selecting color,size,quantity on the Product Detail Page and adding to the cart", async ({
+  page,
+}) => {
+  test.slow();
+  expect(page.locator('[data-test="men-navItem"]').getByRole('link', { name: 'men' })).toBeVisible();
+  await page.locator('[data-test="men-navItem"]').getByRole('link', { name: 'men' }).hover();
+
+  expect(page.locator('a').filter({ hasText: /^Sweaters$/ }).first()).toBeVisible();
+  await page.locator('a').filter({ hasText: /^Sweaters$/ }).first().click();
+
+  expect(page.locator('[data-test="product-card-E453754-000"]').getByRole('link', { name: 'Favorite WASHABLE MILANO' })).toBeVisible();
+  await page.locator('[data-test="product-card-E453754-000"]').getByRole('link', { name: 'Favorite WASHABLE MILANO' }).click();
+
+  expect(page.locator('[data-test="OLIVE"] label')).toBeVisible();
+  await page.locator('[data-test="OLIVE"] label').click();
+
+  expect(page.locator('[data-test="XL"] label')).toBeVisible();
+  await page.locator('[data-test="XL"] label').click();
+
+  expect(page.locator('[data-test="quantity-dropdown"]')).toBeVisible();
+  await page.locator('[data-test="quantity-dropdown"]').click() 
+
+  expect(page.getByRole('option', { name: '2' })).toBeVisible();
+  await page.getByRole('option', { name: '2' }).click();
+
+  expect(page.locator('[data-test="add-to-cart-button"]')).toBeVisible();
+  await page.locator('[data-test="add-to-cart-button"]').click();
+
+  expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
+  await page.getByRole('button', { name: 'Close' }).click();
+
+  expect(page.locator("//i[@class='fr-badge']")).toBeVisible();
+  const cartItemCount = parseInt(await page.locator("//i[@class='fr-badge']").innerText());
+  expect(cartItemCount).toBeGreaterThan(1); 
+
+  });
+
+test.afterEach(async ({ page }) => {
+    await page.goto("https://www.uniqlo.com/ca/en/cart/");
+
+    if(await page.locator('[data-test="ok-button"]').count() > 0)
+    {
+      await page.locator('[data-test="ok-button"]').click();
+
+      await expect(page.locator(".fr-icon.remove")).toBeVisible();
+      await page.locator(".fr-icon.remove").click();
+
+      await expect(page.getByRole("button",{name: "Remove"})).toBeVisible();
+      await page.getByRole("button", {name: 'Remove'}).click();
+    }
+});
