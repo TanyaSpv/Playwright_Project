@@ -136,8 +136,53 @@ test("Selecting color,size,quantity on the Product Detail Page and adding to the
 
   });
 
-test.afterEach(async ({ page }) => {
-    await page.goto("https://www.uniqlo.com/ca/en/cart/");
+test("Change the quantity and remove an item in the shopping cart", async ({
+  page,
+}) => {
+  test.slow();
+  expect(page.getByRole('link', { name: 'kids' })).toBeVisible();
+  await page.getByRole('link', { name: 'kids' }).hover();
+
+  expect(page.locator('a').filter({ hasText: 'Shorts' }).first()).toBeVisible();
+  await page.locator('a').filter({ hasText: 'Shorts' }).first().click();
+
+  expect(page.locator('[data-test="product-card-E470711-000"] a')).toBeVisible();
+  await page.locator('[data-test="product-card-E470711-000"] a').click();
+
+  // adding age
+  expect(page.locator('[data-test="\\37 -8Y\\(130\\)"]').getByText('-8Y(130)')).toBeVisible();
+  await page.locator('[data-test="\\37 -8Y\\(130\\)"]').getByText('-8Y(130)').click();
+
+  expect(page.locator('[data-test="quantity-dropdown"]')).toBeVisible();
+  await page.locator('[data-test="quantity-dropdown"]').click();
+
+  expect(page.getByRole('option', { name: '2' })).toBeVisible();
+  await page.getByRole('option', { name: '2' });
+
+  expect(page.locator('[data-test="add-to-cart-button"]')).toBeVisible();
+  await page.locator('[data-test="add-to-cart-button"]').click();
+
+  expect(page.locator('[data-test="view-cart-button"]')).toBeVisible();
+  await page.locator('[data-test="view-cart-button"]').click();
+
+  expect(page.locator('[data-test="quantity"]')).toBeVisible();
+  await page.locator('[data-test="quantity"]').click();
+
+  expect(page.locator('[data-test="quantity-options"]').getByText('5')).toBeVisible();
+  await page.locator('[data-test="quantity-options"]').getByText('5').click();
+
+  expect(page.locator('[data-test="remove-item-button"]')).toBeVisible();
+  await page.locator('[data-test="remove-item-button"]').click();
+
+  expect(page.locator('[data-test="remove-button"]')).toBeVisible();
+  await page.locator('[data-test="remove-button"]').click();
+
+  });
+
+  test.afterEach(async ({ page }) => {
+    if(!await page.url().includes('cart')){
+      await page.goto("https://www.uniqlo.com/ca/en/cart/");
+    }
 
     if(await page.locator('[data-test="ok-button"]').count() > 0)
     {
