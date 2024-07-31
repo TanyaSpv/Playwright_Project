@@ -179,6 +179,104 @@ test("Change the quantity and remove an item in the shopping cart", async ({
 
   });
 
+
+
+  test("Proceed to checkout and fill out the form", async ({
+    page,
+  }) => {
+    test.slow();
+    await expect(page.getByRole('link', { name: 'kids' })).toBeVisible();
+    await page.getByRole('link', { name: 'kids' }).hover();
+  
+    await expect(page.locator('a').filter({ hasText: 'Shorts' }).first()).toBeVisible();
+    await page.locator('a').filter({ hasText: 'Shorts' }).first().click();
+  
+    await expect(page.locator('[data-test="product-card-E470711-000"] a')).toBeVisible();
+    await page.locator('[data-test="product-card-E470711-000"] a').click();
+  
+    // adding age
+    await expect(page.locator('[data-test="\\37 -8Y\\(130\\)"]').getByText('-8Y(130)')).toBeVisible();
+    await page.locator('[data-test="\\37 -8Y\\(130\\)"]').getByText('-8Y(130)').click();
+  
+    await expect(page.locator('[data-test="quantity-dropdown"]')).toBeVisible();
+    await page.locator('[data-test="quantity-dropdown"]').click();
+  
+    await expect(page.getByRole('option', { name: '1' })).toBeVisible();
+    await page.getByRole('option', { name: '1' });
+  
+    await expect(page.locator('[data-test="add-to-cart-button"]')).toBeVisible();
+    await page.locator('[data-test="add-to-cart-button"]').click();
+  
+    await expect(page.locator('[data-test="view-cart-button"]')).toBeVisible();
+    await page.locator('[data-test="view-cart-button"]').click();
+  
+    await page.waitForTimeout(5000);
+
+    await expect(page.locator('[data-test="checkout-button"]')).toBeVisible();
+    await page.locator('[data-test="checkout-button"]').click();
+
+    await page.waitForTimeout(5000);
+
+    await expect(page.getByPlaceholder('Please enter your first name')).toBeVisible();
+    await page.getByPlaceholder('Please enter your first name').scrollIntoViewIfNeeded();
+    await page.getByPlaceholder('Please enter your first name').fill('John');
+
+    await page.waitForTimeout(2000);
+    
+    await expect(page.getByPlaceholder('Please enter your last name (')).toBeVisible();
+    await page.getByPlaceholder('Please enter your last name').fill ('Doe');
+
+    await page.waitForTimeout(2000);
+
+    await expect(page.getByPlaceholder('Please enter your Canadian')).toBeVisible();
+    await page.getByPlaceholder('Please enter your Canadian').fill('E1C1B2');
+
+    await page.waitForTimeout(2000);
+
+    await expect(page.getByPlaceholder('Street and number, c/o.')).toBeVisible();
+    await page.getByPlaceholder('Street and number, c/o.').fill('Albert Street 118');
+
+    await page.waitForTimeout(2000);
+
+    await expect(page.getByPlaceholder('Apt, suite/unit, floor,')).toBeVisible();
+    await page.getByPlaceholder('Street and number, c/o.').fill('Apt 25, second floor');
+
+    await page.waitForTimeout(2000);
+
+    await expect(page.getByPlaceholder('Please enter your city.')).toBeVisible();
+    await page.getByPlaceholder('Please enter your city.').fill('Moncton');
+
+    await page.waitForTimeout(2000);
+
+    await expect(page.getByPlaceholder('Please enter your phone')).toBeVisible();
+    await page.getByPlaceholder('Please enter your phone').fill('7052541867');
+
+    await page.waitForTimeout(2000);
+
+    await expect(page.locator('label').filter({ hasText: 'Please confirm that the' })).toBeVisible();
+
+    await page.waitForTimeout(2000);
+
+    await page.locator('label').filter({ hasText: 'Please confirm that the' }).check();
+
+    await page.waitForTimeout(2000);
+
+    await expect(page.locator('label').filter({ hasText: 'Please confirm that the' })).toBeChecked();
+
+
+    await page.locator('label').filter({ hasText: 'Use as billing address' }).check();
+
+    await page.waitForTimeout(2000);
+
+    await expect(page.locator('label').filter({ hasText: 'Use as billing address' })).toBeChecked();
+
+
+    
+
+    });
+
+
+
   test.afterEach(async ({ page }) => {
     if(!await page.url().includes('cart')){
       await page.goto("https://www.uniqlo.com/ca/en/cart/");
@@ -195,3 +293,4 @@ test("Change the quantity and remove an item in the shopping cart", async ({
       await page.getByRole("button", {name: 'Remove'}).click();
     }
 });
+
