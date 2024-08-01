@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
-
+import { faker } from '@faker-js/faker';
 // Read from default ".env" file.
 dotenv.config();
 
@@ -275,7 +275,63 @@ test("Change the quantity and remove an item in the shopping cart", async ({
 
     });
 
+    test("Continue to payment and fill out the form", async ({
+      page,
+    }) => {
+      test.slow();
+      await expect(page.getByRole('link', { name: 'kids' })).toBeVisible();
+      await page.getByRole('link', { name: 'kids' }).hover();
+    
+      await expect(page.locator('a').filter({ hasText: 'Shorts' }).first()).toBeVisible();
+      await page.locator('a').filter({ hasText: 'Shorts' }).first().click();
+    
+      await expect(page.locator('[data-test="product-card-E470711-000"] a')).toBeVisible();
+      await page.locator('[data-test="product-card-E470711-000"] a').click();
+    
+      // adding age
+      await expect(page.locator('[data-test="\\37 -8Y\\(130\\)"]').getByText('-8Y(130)')).toBeVisible();
+      await page.locator('[data-test="\\37 -8Y\\(130\\)"]').getByText('-8Y(130)').click();
+    
+      await expect(page.locator('[data-test="quantity-dropdown"]')).toBeVisible();
+      await page.locator('[data-test="quantity-dropdown"]').click();
+    
+      await expect(page.getByRole('option', { name: '1' })).toBeVisible();
+      await page.getByRole('option', { name: '1' });
+    
+      await expect(page.locator('[data-test="add-to-cart-button"]')).toBeVisible();
+      await page.locator('[data-test="add-to-cart-button"]').click();
+    
+      await expect(page.locator('[data-test="view-cart-button"]')).toBeVisible();
+      await page.locator('[data-test="view-cart-button"]').click();
+    
+      await page.waitForTimeout(5000);
+  
+      await expect(page.locator('[data-test="checkout-button"]')).toBeVisible();
+      await page.locator('[data-test="checkout-button"]').click();
+  
+      await page.waitForTimeout(5000);
+      await page.locator('[data-test="continue-to-payment-button"]').scrollIntoViewIfNeeded();
+      await expect(page.locator('[data-test="continue-to-payment-button"]')).toBeVisible();
+      await page.locator('[data-test="continue-to-payment-button"]').click();
+      await expect(page.locator('[data-test="continue-to-payment-button"]')).toBeVisible();
+      await page.locator('[data-test="continue-to-payment-button"]').click();
+      
+      await page.waitForTimeout(5000);
 
+      await expect(page.frameLocator('iframe[title="Iframe for secured card number"]').getByLabel('Card number field')).toBeVisible();
+      await page.frameLocator('iframe[title="Iframe for secured card number"]').getByLabel('Card number field').fill(faker.finance.creditCardNumber());
+
+      await expect(page.frameLocator('iframe[title="Iframe for secured card expiry date"]').getByPlaceholder('MM/YY')).toBeVisible();
+      await page.frameLocator('iframe[title="Iframe for secured card expiry date"]').getByPlaceholder('MM/YY').fill('09/26');
+
+      await expect(page.frameLocator('iframe[title="Iframe for secured card security code"]').getByPlaceholder('digits')).toBeVisible();
+      await page.frameLocator('iframe[title="Iframe for secured card security code"]').getByPlaceholder('digits').fill('2567');
+
+      await expect(page.getByLabel('Full name')).toBeVisible();
+      await page.getByLabel('Full name').fill('John Doe');
+
+    });
+      
 
   test.afterEach(async ({ page }) => {
     if(!await page.url().includes('cart')){
