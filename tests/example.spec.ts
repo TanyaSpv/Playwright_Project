@@ -332,6 +332,66 @@ test("Change the quantity and remove an item in the shopping cart", async ({
 
     });
       
+    test("Cteating and removing wish list", async ({
+      page,
+    }) => {
+      test.slow();
+      expect(page.getByRole('link', { name: 'women' })).toBeVisible();
+      await page.getByRole('link', { name: 'women' }).hover();
+    
+      expect(page.locator('a').filter({ hasText: 'New Arrivals' }).first()).toBeVisible();
+      await page.locator('a').filter({ hasText: 'New Arrivals' }).first().click();
+    
+      expect(page.locator('[data-test="product-card-E475462-000"]').getByRole('button', { name: 'Favorite' })).toBeVisible();
+      await page.locator('[data-test="product-card-E475462-000"]').getByRole('button', { name: 'Favorite' }).click();
+    
+      expect(page.locator('[data-test="product-card-E469863-000"]').getByRole('button', { name: 'Favorite' })).toBeVisible();
+      await page.locator('[data-test="product-card-E469863-000"]').getByRole('button', { name: 'Favorite' }).click();
+    
+      expect(page.locator('[data-test="product-card-E469425-000"]').getByRole('link', { name: 'Favorite SOFT FLANNEL SKIPPER' })).toBeVisible();
+      await page.locator('[data-test="product-card-E469425-000"]').getByRole('link', { name: 'Favorite SOFT FLANNEL SKIPPER' }).click();
+    
+      expect(page.locator('[data-test="add-to-wishlist-link"] a')).toBeVisible();
+      await page.locator('[data-test="add-to-wishlist-link"] a').click() 
+    
+      expect(page.getByRole('link', { name: 'Wish list' })).toBeVisible();
+      await page.getByRole('link', { name: 'Wish list' }).click();
+    
+      await page.waitForTimeout(5000);
+      // Assuming 'page' is your Playwright page object
+
+      // Select the wishlist items
+      // Select all wishlist items using a selector
+      const wishlistItems = await page.$$('.fr-product-card.list.list-for-wishlist');
+
+      // Assert that the number of wishlist items is 3
+      expect(wishlistItems.length).toBe(3);
+
+      
+      expect(page.getByRole('link', { name: 'Favorite Image not found SOFT' }).getByRole('button')).toBeVisible();
+      await page.getByRole('link', { name: 'Favorite Image not found SOFT' }).getByRole('button').click() 
+
+      await page.waitForTimeout(5000);
+
+      expect(page.getByRole('link', { name: 'Favorite Image not found PUFFTECH COMPACT VEST Product ID: 469863 Color: 32' }).getByRole('button')).toBeVisible();
+      await page.getByRole('link', { name: 'Favorite Image not found PUFFTECH COMPACT VEST Product ID: 469863 Color: 32' }).getByRole('button').click()
+       
+      await page.waitForTimeout(5000);
+
+      expect(page.getByRole('link', { name: 'Favorite Image not found KNITTED SHORT STRIPED JACKET Product ID: 475462 Color: 09 BLACK Size: Women New CAD $' }).getByRole('button')).toBeVisible();
+      await page.getByRole('link', { name: 'Favorite Image not found KNITTED SHORT STRIPED JACKET Product ID: 475462 Color: 09 BLACK Size: Women New CAD $' }).getByRole('button').click() 
+  
+    
+      // Find the element that contains the text 'Your wish list has no items.'
+     const emptyWishlistText = await page.getByText('Your wish list has no items.');
+
+      // Assert that the element exists, indicating the wishlist is empty
+     expect(emptyWishlistText).not.toBeNull();
+
+
+    
+      });
+    
 
   test.afterEach(async ({ page }) => {
     if(!await page.url().includes('cart')){
