@@ -161,6 +161,7 @@ test("Change the quantity and remove an item in the shopping cart", async ({
   page,
 }) => {
   test.slow();
+  await page.waitForTimeout(1500);
   await expect(page.getByRole("link", { name: "kids" })).toBeVisible();
   await page.getByRole("link", { name: "kids" }).hover();
 
