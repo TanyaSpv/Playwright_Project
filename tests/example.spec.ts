@@ -85,6 +85,7 @@ test("Selecting womens T-shirts and filtering", async ({ page }) => {
   await page.locator('[data-test="filter-by-price"]').click();
   await page.locator("label").filter({ hasText: "$20 - $" }).click();
 
+  await expect(page).toHaveScreenshot();
   // Verify filter 'M' is selected
   const sizeFilterSelected = await page.locator(".fr-flitem.col6.right").nth(1);
   expect(sizeFilterSelected).toContainText("XXS-XXL");
@@ -555,7 +556,7 @@ test.afterEach(async ({ page }) => {
   if (!(await page.url().includes("cart"))) {
     await page.goto("https://www.uniqlo.com/ca/en/cart/");
   }
-  if ((await page.locator(".fr-btn.primary.w4-f").last().count()) > 1) {
+  if ((await page.locator(".fr-btn.primary.w4-f").last().count()) > 0) {
     await page.locator(".fr-btn.primary.w4-f").last().click();
   }
   while ((await page.locator('[data-test="remove-item-button"]').count()) > 0) {
