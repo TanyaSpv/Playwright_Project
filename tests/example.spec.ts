@@ -1,22 +1,22 @@
 import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import { faker } from "@faker-js/faker";
-import { parentPort } from "worker_threads";
+import { UniqloLoginPage}  from "../POM/login";
+
 // Read from default ".env" file.
 dotenv.config();
 
+
+
 test.beforeEach(async ({ page }) => {
-  await page.goto("https://www.uniqlo.com/ca/en/");
-  await page.waitForTimeout(5000);
-  await page.keyboard.press("Escape");
-  await page.getByRole("link", { name: "Login" }).click();
-  await page
-    .getByPlaceholder("Enter a valid email")
-    .fill(`${process.env.EMAIL}`);
-  await page
-    .getByLabel("Password Password must be at")
-    .fill(`${process.env.PASSWORD}`);
-  await page.locator('[data-test="login-button"]').click();
+  const loginPage = new UniqloLoginPage(page);
+
+  await loginPage.goto();
+  await loginPage.manageModal();
+  await loginPage.clickToLogIn();
+  await loginPage.enterUserName(`${process.env.EMAIL}`);
+  await loginPage.enterPassword(`${process.env.PASSWORD}`);
+  await loginPage.loginUser();
 });
 
 test("searching for a hat", async ({ page }) => {
