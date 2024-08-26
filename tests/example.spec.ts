@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import { faker } from "@faker-js/faker";
 import { UniqloLoginPage}  from "../POM/login";
+import { UniqloSearchPage } from "../POM/search";
 
 // Read from default ".env" file.
 dotenv.config();
@@ -20,14 +21,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("searching for a hat", async ({ page }) => {
-  await page.getByRole("button", { name: "Search" }).click();
-  await page.getByPlaceholder("Search by keyword").fill("hats");
+  const searchPage = new UniqloSearchPage(page);
 
-  await page.keyboard.press("Enter");
+  await searchPage.searchItem();
+  await searchPage.fillItem("hats");
+  await searchPage.pressEnterButton();
   await page.waitForLoadState();
-  await expect(
-    page.getByRole("link", { name: "CASHMERE KNITTED BEANIE" })
-  ).toBeVisible();
+  expect(searchPage.isItemFound()).toBeTruthy();
 });
 
 test("Selecting womens T-shirts and sorting them by price", async ({
