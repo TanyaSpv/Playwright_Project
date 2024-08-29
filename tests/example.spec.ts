@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { faker } from "@faker-js/faker";
 import { UniqloLoginPage}  from "../POM/login";
 import { UniqloSearchPage } from "../POM/search";
+import { UniqloSortingByPrice } from "../POM/sortingbypricepom"
 
 // Read from default ".env" file.
 dotenv.config();
@@ -33,39 +34,16 @@ test("searching for a hat", async ({ page }) => {
 test("Selecting womens T-shirts and sorting them by price", async ({
   page,
 }) => {
-  await page.getByRole("link", { name: "women" }).hover();
-  await page
-    .locator("a")
-    .filter({ hasText: /^T-shirts$/ })
-    .first()
-    .click();
-  await page.locator('[data-test="sort-by"]').click();
+  const uniqloSortByPrice = new UniqloSortingByPrice(page);
+
+  await uniqloSortByPrice.selectGenderOption("women");
+  await uniqloSortByPrice.sortByItem();
   await page.waitForTimeout(1000);
-  await page.getByRole("option", { name: "Price: Low to high" }).click();
+  await uniqloSortByPrice.filteringItem(false);
   await page.waitForTimeout(1000);
-  var firstItemElement = await page
-    .locator(
-      `//article[contains(@class, 'fr-grid-item w4')]//div[@class='price fr-no-uppercase']`
-    )
-    .first()
-    .allInnerTexts();
-  var lastItemElement = await page
-    .locator(
-      `//article[contains(@class, 'fr-grid-item w4')]//div[@class='price fr-no-uppercase']`
-    )
-    .last()
-    .allInnerTexts();
-
-  // Step 1: Remove non-digit and non-dot characters
-  var cleanedString = firstItemElement[0].replace(/[^\d.]/g, "");
-
-  // Step 2: Parse the cleaned string as a floating-point number
-  var firstItemValue = parseFloat(cleanedString);
-
-  cleanedString = lastItemElement[0].replace(/[^\d.]/g, "");
-  var lastItemValue = parseFloat(cleanedString);
-
-  expect(firstItemValue).toBeLessThanOrEqual(lastItemValue);
+  await uniqloSortByPrice.getFirstItemInnerText();
+  await uniqloSortByPrice.getLastItemInnerText();
+  expect(uniqloSortByPrice.firstTextAmt).toBeLessThanOrEqual(uniqloSortByPrice.lastTextAmt);
 });
 
 test("Selecting womens T-shirts and filtering", async ({ page }) => {
@@ -556,7 +534,7 @@ test.afterEach(async ({ page }) => {
   if (!(await page.url().includes("cart"))) {
     await page.goto("https://www.uniqlo.com/ca/en/cart/");
   }
-  if ((await page.locator(".fr-btn.primary.w4-f").last().count()) > 0) {
+  if ((await page.locator(".fr-btn.primary.w4-f").last().count()) > 1) {
     await page.locator(".fr-btn.primary.w4-f").last().click();
   }
   while ((await page.locator('[data-test="remove-item-button"]').count()) > 0) {
