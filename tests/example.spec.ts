@@ -1,14 +1,13 @@
 import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import { faker } from "@faker-js/faker";
-import { UniqloLoginPage}  from "../POM/login";
+import { UniqloLoginPage } from "../POM/login";
 import { UniqloSearchPage } from "../POM/search";
-import { UniqloSortingByPrice } from "../POM/sortingbypricepom"
+import { UniqloSortingByPrice } from "../POM/sortingbypricepom";
+import { UniqloFilterPage } from "../POM/filtering";
 
 // Read from default ".env" file.
 dotenv.config();
-
-
 
 test.beforeEach(async ({ page }) => {
   const loginPage = new UniqloLoginPage(page);
@@ -43,38 +42,32 @@ test("Selecting womens T-shirts and sorting them by price", async ({
   await page.waitForTimeout(1000);
   await uniqloSortByPrice.getFirstItemInnerText();
   await uniqloSortByPrice.getLastItemInnerText();
-  expect(uniqloSortByPrice.firstTextAmt).toBeLessThanOrEqual(uniqloSortByPrice.lastTextAmt);
+  expect(uniqloSortByPrice.firstTextAmt).toBeLessThanOrEqual(
+    uniqloSortByPrice.lastTextAmt
+  );
 });
 
 test("Selecting womens T-shirts and filtering", async ({ page }) => {
-  test.slow();
-  await page.getByRole("link", { name: "women" }).hover();
-  await page
-    .locator("a")
-    .filter({ hasText: /^T-shirts$/ })
-    .first()
-    .click();
-  await page.locator('[data-test="filter-by-size"]').click();
-  await page.locator('[data-test="filter-M"]').getByText("M").click();
+  const uniqloFiltergBySizeAndPrice = new UniqloFilterPage(page);
 
-  await page.locator('[data-test="filter-by-colour"]').click();
-  await page.locator('[data-test="filter-WHITE"] label div').click();
-
-  await page.locator('[data-test="filter-by-price"]').click();
-  await page.locator("label").filter({ hasText: "$20 - $" }).click();
-
-  await expect(page).toHaveScreenshot();
-  // Verify filter 'M' is selected
-  const sizeFilterSelected = await page.locator(".fr-flitem.col6.right").nth(1);
-  expect(sizeFilterSelected).toContainText("XXS-XXL");
-
-  const priceFilterSelected = await page
-    .locator("label")
-    .filter({ hasText: "$20 - $" })
-    .isChecked();
-  expect(priceFilterSelected).toBe(true);
-
-  await page.locator('[data-test="filters-clear"]').click();
+  await uniqloFiltergBySizeAndPrice.selectGenderOption("women");
+  await uniqloFiltergBySizeAndPrice.clickOnItemFilter();
+  await uniqloFiltergBySizeAndPrice.clickOnFilterBySize();
+  await uniqloFiltergBySizeAndPrice.clickOnFilterBySpecificSize("M");
+  await uniqloFiltergBySizeAndPrice.clickOnFilterByColor();
+  await uniqloFiltergBySizeAndPrice.clickOnFilterBySpecificColor("WHITE");
+  await uniqloFiltergBySizeAndPrice.clickOnFilterByPrice();
+  await uniqloFiltergBySizeAndPrice.clickOnFilterBySize();
+  await uniqloFiltergBySizeAndPrice.clickOnFilterBySpecificPrice("$20 - $");
+  await uniqloFiltergBySizeAndPrice.sizeFilterOptionSelected("XXS-XXL");
+  expect(uniqloFiltergBySizeAndPrice.sizeFilterSelected).toContainText(
+    "XXS-XXL"
+  );
+  await uniqloFiltergBySizeAndPrice.priceFilterOptionSelected("$20 - $");
+  expect(
+    await uniqloFiltergBySizeAndPrice.priceFilterSelected.isChecked()
+  ).toBe(true);
+  await uniqloFiltergBySizeAndPrice.clearAllSelections();
 });
 
 test("Selecting color,size,quantity on the Product Detail Page and adding to the cart", async ({
@@ -351,7 +344,6 @@ test.fixme("Fill out the checkout form", async ({ page }) => {
   test.slow();
 
   //TODO: Get to checkout form to fill out.
-
 
   await expect(
     page.getByPlaceholder("Please enter your first name")
