@@ -5,6 +5,7 @@ import { UniqloLoginPage } from "../POM/login";
 import { UniqloSearchPage } from "../POM/search";
 import { UniqloSortingByPrice } from "../POM/sortingbypricepom";
 import { UniqloFilterPage } from "../POM/filtering";
+import { UniqloShoppingCartPage } from "../POM/ShoppingCartQuantity";
 
 // Read from default ".env" file.
 dotenv.config();
@@ -132,55 +133,20 @@ test("Selecting color,size,quantity on the Product Detail Page and adding to the
 test("Change the quantity and remove an item in the shopping cart", async ({
   page,
 }) => {
-  test.slow();
-  await page.waitForTimeout(1500);
-  await expect(page.getByRole("link", { name: "kids" })).toBeVisible();
-  await page.getByRole("link", { name: "kids" }).hover();
+  const uniqloChangeQuantity = new UniqloShoppingCartPage(page);
 
-  await expect(
-    page.locator("a").filter({ hasText: "Shorts" }).first()
-  ).toBeVisible();
-  await page.locator("a").filter({ hasText: "Shorts" }).first().click();
-
-  await expect(
-    page.locator('[data-test="product-card-E470711-000"] a')
-  ).toBeVisible();
-  await page.locator('[data-test="product-card-E470711-000"] a').click();
-
-  // adding age
-  await expect(
-    page.locator('[data-test="\\37 -8Y\\(130\\)"]').getByText("-8Y(130)")
-  ).toBeVisible();
-  await page
-    .locator('[data-test="\\37 -8Y\\(130\\)"]')
-    .getByText("-8Y(130)")
-    .click();
-
-  await expect(page.locator('[data-test="quantity-dropdown"]')).toBeVisible();
-  await page.locator('[data-test="quantity-dropdown"]').click();
-
-  await expect(page.getByRole("option", { name: "2" })).toBeVisible();
-  await page.getByRole("option", { name: "2" });
-
-  await expect(page.locator('[data-test="add-to-cart-button"]')).toBeVisible();
-  await page.locator('[data-test="add-to-cart-button"]').click();
-
-  await expect(page.locator('[data-test="view-cart-button"]')).toBeVisible();
-  await page.locator('[data-test="view-cart-button"]').click();
-
-  await page.waitForTimeout(1500);
-
-  if ((await page.locator('[data-test="ok-button"]').count()) > 0) {
-    await page.locator('[data-test="ok-button"]').click();
-  }
-
-  await expect(page.locator('[data-test="quantity"]').first()).toBeVisible();
-  await page.locator('[data-test="quantity"]').first().click();
-
-  await expect(
-    page.locator('[data-test="quantity-options"]').getByText("5")
-  ).toBeVisible();
-  await page.locator('[data-test="quantity-options"]').getByText("5").click();
+  await uniqloChangeQuantity.searchForKidsItem();
+  await uniqloChangeQuantity.filterProduct("Shorts");
+  await uniqloChangeQuantity.itemSelection();
+  await uniqloChangeQuantity.clickAgeButton();
+  await uniqloChangeQuantity.ageSelection("-8Y(130)");
+  await uniqloChangeQuantity.clickDropDown();
+  await uniqloChangeQuantity.quantitySelection("2");
+  await uniqloChangeQuantity.addItemToTheShoppingCart();
+  await uniqloChangeQuantity.viewItemInTheShoppingCart();
+  await uniqloChangeQuantity.waitForAndClickOkButton();
+  await uniqloChangeQuantity.clickOnNewQuantity();
+  await uniqloChangeQuantity.increaseQuantity("2");
 });
 
 test("Proceed to checkout and fill out the form", async ({ page }) => {
