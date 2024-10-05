@@ -7,15 +7,17 @@ export class UniqloLoginPage {
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButtonComplete: Locator;
+  readonly okayButton: Locator;
 
 
   constructor(page: Page) {
     this.page = page;
     this.uniqloUrl = "https://www.uniqlo.com/ca/en/";
-    this.loginButton = page.getByRole("link", { name: "Login" });
+    this.loginButton = page.getByRole('button').nth(4);
     this.emailInput = page.getByPlaceholder("Enter a valid email");
     this.passwordInput = page.getByLabel("Password Password must be at");
     this.loginButtonComplete = page.locator('[data-test="login-button"]');
+    this.okayButton = page.locator('[data-test="ok-button"]');
   }
 
   async goto() {
@@ -28,7 +30,8 @@ export class UniqloLoginPage {
   }
 
   async clickToLogIn(){
-    await this.loginButton.click();
+    await this.loginButton.click({force: true});
+    await this.okayButton.click();
   }
 
   async enterUserName(email: string){

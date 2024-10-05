@@ -9,7 +9,7 @@ export class UniqloSearchPage {
   
     constructor(page: Page) {
       
-      this.searchButton = page.getByRole("button", { name: "Search" });
+      this.searchButton = page.getByRole('button').nth(2);
       this.itemInput = page.getByPlaceholder("Search by keyword");
       this.itemFound = page.getByRole("link", { name: "CASHMERE KNITTED BEANIE" });
     }

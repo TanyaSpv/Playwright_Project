@@ -6,7 +6,7 @@ import { UniqloSearchPage } from "../POM/search";
 import { UniqloSortingByPrice } from "../POM/sortingbypricepom";
 import { UniqloFilterPage } from "../POM/filtering";
 import { UniqloShoppingCartPage } from "../POM/ShoppingCartQuantity";
-
+import { UniqloProductDetailPage } from "../POM/SelectingItemParameters";
 // Read from default ".env" file.
 dotenv.config();
 
@@ -19,6 +19,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.enterUserName(`${process.env.EMAIL}`);
   await loginPage.enterPassword(`${process.env.PASSWORD}`);
   await loginPage.loginUser();
+  await page.goto("https://www.uniqlo.com/ca/en/");
 });
 
 test("searching for a hat", async ({ page }) => {
@@ -71,64 +72,23 @@ test("Selecting womens T-shirts and filtering", async ({ page }) => {
   await uniqloFiltergBySizeAndPrice.clearAllSelections();
 });
 
-test("Selecting color,size,quantity on the Product Detail Page and adding to the cart", async ({
-  page,
-}) => {
-  test.slow();
-  expect(
-    page.locator('[data-test="men-navItem"]').getByRole("link", { name: "men" })
-  ).toBeVisible();
-  await page
-    .locator('[data-test="men-navItem"]')
-    .getByRole("link", { name: "men" })
-    .hover();
+test("Selecting color,size,quantity on the Product Detail Page and adding to the cart", async ({ page }) => {
+  const uniqloSelectingColorSizeAndQuantity = new UniqloProductDetailPage(page);
 
-  expect(
-    page
-      .locator("a")
-      .filter({ hasText: /^Sweaters$/ })
-      .first()
-  ).toBeVisible();
-  await page
-    .locator("a")
-    .filter({ hasText: /^Sweaters$/ })
-    .first()
-    .click();
-
-  expect(
-    page
-      .locator('[data-test="product-card-E453754-000"]')
-      .getByRole("link", { name: "Favorite WASHABLE MILANO" })
-  ).toBeVisible();
-  await page
-    .locator('[data-test="product-card-E453754-000"]')
-    .getByRole("link", { name: "Favorite WASHABLE MILANO" })
-    .click();
-
-  expect(page.locator('[data-test="OLIVE"] label')).toBeVisible();
-  await page.locator('[data-test="OLIVE"] label').click();
-
-  expect(page.locator('[data-test="XL"] label')).toBeVisible();
-  await page.locator('[data-test="XL"] label').click();
-
-  expect(page.locator('[data-test="quantity-dropdown"]')).toBeVisible();
-  await page.locator('[data-test="quantity-dropdown"]').click();
-
-  expect(page.getByRole("option", { name: "2" })).toBeVisible();
-  await page.getByRole("option", { name: "2" }).click();
-
-  expect(page.locator('[data-test="add-to-cart-button"]')).toBeVisible();
-  await page.locator('[data-test="add-to-cart-button"]').click();
-
-  expect(page.getByRole("button", { name: "Close" })).toBeVisible();
-  await page.getByRole("button", { name: "Close" }).click();
-
-  expect(page.locator("//i[@class='fr-badge']")).toBeVisible();
-  const cartItemCount = parseInt(
-    await page.locator("//i[@class='fr-badge']").innerText()
-  );
-  expect(cartItemCount).toBeGreaterThan(1);
+  await uniqloSelectingColorSizeAndQuantity.searchForMenItem();
+  await uniqloSelectingColorSizeAndQuantity.clickSearchBar();
+  await uniqloSelectingColorSizeAndQuantity.clickOnTheSweaterOption("SWEATERS & KNITWEAR");
+  await uniqloSelectingColorSizeAndQuantity.clickOnTheSweaterOptionSecondTime("SWEATERS & KNITWEAR");
+  await uniqloSelectingColorSizeAndQuantity.itemSelection();
+  await uniqloSelectingColorSizeAndQuantity.colorSelection();
+  await uniqloSelectingColorSizeAndQuantity.sizeSelection("XL");
+  await uniqloSelectingColorSizeAndQuantity.clickDropDown();
+  await uniqloSelectingColorSizeAndQuantity.quantitySelection("2");
+  await uniqloSelectingColorSizeAndQuantity.addItemToTheShoppingCart();
+  await uniqloSelectingColorSizeAndQuantity.clickCloseButton();
+  await uniqloSelectingColorSizeAndQuantity.getCartItemCount();
 });
+
 
 test("Change the quantity and remove an item in the shopping cart", async ({
   page,
