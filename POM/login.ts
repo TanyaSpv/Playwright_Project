@@ -30,6 +30,7 @@ export class UniqloLoginPage {
   }
 
   async clickToLogIn(){
+    await this.page.waitForTimeout(1000);
     await this.loginButton.click({force: true});
     await this.okayButton.click();
   }
