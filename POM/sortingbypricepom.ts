@@ -1,9 +1,10 @@
 import { type Locator, type Page } from "@playwright/test";
 
 export class UniqloSortingByPrice {
-  selectGender: Locator;
-  readonly itemFilter: Locator;
-  sortingButton: Locator;
+  searchButton: Locator;
+  selectButton: Locator;
+  selectSpecificButton: Locator;
+  filterButton: Locator;
   priceFilterLowToHigh: Locator;
   firstItemElement: Locator;
   lastItemElement: Locator;
@@ -18,24 +19,30 @@ export class UniqloSortingByPrice {
 
   constructor(page: Page) {
     this.page = page;
-    this.itemFilter = page
-      .locator("a")
-      .filter({ hasText: /^T-shirts$/ })
-      .first();
+
   }
 
-  async selectGenderOption(gender: string) {
-    this.selectGender = this.page.getByRole("link", { name: `${gender}` });
-    await this.selectGender.hover();
-    await this.itemFilter.click();
+  async searchItem(){
+    this.searchButton = this.page.getByRole('button').nth(3);
+    await this.searchButton.click({force: true});
   }
 
-  async sortByItem() {
-    this.sortingButton = this.page.locator('[data-test="sort-by"]');
-    await this.sortingButton.click();
+  async selectItem(){
+    this.selectButton = this.page.getByRole('button', { name: 'T-Shirts, Sweats & Fleece' });
+    await this.selectButton.click({force: true});
   }
 
-  async filteringItem(ascending: boolean) {
+  async selectSpecificItem(){
+    this.selectSpecificButton = this.page.getByRole('link', { name: 'T-shirts', exact: true });
+    await this.selectSpecificButton.click({force: true});
+  }
+
+  async clickFilterByPrice() {
+    this.filterButton = this.page.locator('[data-test="sort-by"]');
+    await this.filterButton.click();
+  }
+
+  async filteringOptions(ascending: boolean = true) {
     if (ascending) {
       this.priceFilterLowToHigh = this.page.getByRole("option", {
         name: "Price: High to low",

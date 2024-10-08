@@ -37,10 +37,12 @@ test("Selecting womens T-shirts and sorting them by price", async ({
 }) => {
   const uniqloSortByPrice = new UniqloSortingByPrice(page);
 
-  await uniqloSortByPrice.selectGenderOption("women");
-  await uniqloSortByPrice.sortByItem();
+  await uniqloSortByPrice.searchItem();
+  await uniqloSortByPrice.selectItem();
   await page.waitForTimeout(1000);
-  await uniqloSortByPrice.filteringItem(false);
+  await uniqloSortByPrice.selectSpecificItem();
+  await uniqloSortByPrice.clickFilterByPrice();
+  await uniqloSortByPrice.filteringOptions();
   await page.waitForTimeout(1000);
   await uniqloSortByPrice.getFirstItemInnerText();
   await uniqloSortByPrice.getLastItemInnerText();
