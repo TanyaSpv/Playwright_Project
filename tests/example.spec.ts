@@ -54,8 +54,9 @@ test("Selecting womens T-shirts and sorting them by price", async ({
 test("Selecting womens T-shirts and filtering", async ({ page }) => {
   const uniqloFiltergBySizeAndPrice = new UniqloFilterPage(page);
 
-  await uniqloFiltergBySizeAndPrice.selectGenderOption("women");
-  await uniqloFiltergBySizeAndPrice.clickOnItemFilter();
+  await uniqloFiltergBySizeAndPrice.searchItem();
+  await uniqloFiltergBySizeAndPrice.selectItemType('T-Shirts, Sweats & Fleece');
+  await uniqloFiltergBySizeAndPrice.selectItemSpeciality('T-shirts');
   await uniqloFiltergBySizeAndPrice.clickOnFilterBySize();
   await uniqloFiltergBySizeAndPrice.clickOnFilterBySpecificSize("M");
   await uniqloFiltergBySizeAndPrice.clickOnFilterByColor();

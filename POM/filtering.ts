@@ -1,8 +1,9 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 export class UniqloFilterPage {
-  selectGender: Locator;
-  readonly itemFilter: Locator;
+  searchButton: Locator;
+  selectingOption: Locator;
+  selectingOptionSecondTime: Locator;
   readonly itemFilterSize: Locator;
   itemFilterSizeM: Locator;
   readonly itemFilterColor: Locator;
@@ -15,10 +16,7 @@ export class UniqloFilterPage {
   readonly page: Page;
 
   constructor(page: Page) {
-    this.itemFilter = page
-      .locator("a")
-      .filter({ hasText: /^T-shirts$/ })
-      .first();
+    this.searchButton = page.getByRole('button').nth(3);
     this.itemFilterSize = page.locator('[data-test="filter-by-size"]');
     this.itemFilterColor = page.locator('[data-test="filter-by-colour"]');
     this.itemFilterPrice = page.locator('[data-test="filter-by-price"]');
@@ -30,13 +28,20 @@ export class UniqloFilterPage {
     this.page = page;
   }
 
-  async selectGenderOption(gender: string) {
-    this.selectGender = this.page.getByRole("link", { name: gender });
-    await this.selectGender.hover();
+  async searchItem(){
+    await this.searchButton.click({force: true});
   }
 
-  async clickOnItemFilter() {
-    await this.itemFilter.click();
+  async selectItemType(filteringOption: string) {
+    this.selectingOption = this.page.getByRole('button', { name: filteringOption });
+    await expect(this.selectingOption).toBeVisible();
+    await this.selectingOption.click();
+  }
+
+  async selectItemSpeciality(filterOption: string) {
+    this.selectingOptionSecondTime = this.page.getByRole('link', { name: filterOption, exact: true });
+    await expect(this.selectingOptionSecondTime).toBeVisible();
+    await this.selectingOptionSecondTime.click();
   }
 
   async clickOnFilterBySize() {
