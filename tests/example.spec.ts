@@ -55,8 +55,8 @@ test("Selecting womens T-shirts and filtering", async ({ page }) => {
   const uniqloFiltergBySizeAndPrice = new UniqloFilterPage(page);
 
   await uniqloFiltergBySizeAndPrice.searchItem();
-  await uniqloFiltergBySizeAndPrice.selectItemType('T-Shirts, Sweats & Fleece');
-  await uniqloFiltergBySizeAndPrice.selectItemSpeciality('T-shirts');
+  await uniqloFiltergBySizeAndPrice.selectItemType("T-Shirts, Sweats & Fleece");
+  await uniqloFiltergBySizeAndPrice.selectItemSpeciality("T-shirts");
   await uniqloFiltergBySizeAndPrice.clickOnFilterBySize();
   await uniqloFiltergBySizeAndPrice.clickOnFilterBySpecificSize("M");
   await uniqloFiltergBySizeAndPrice.clickOnFilterByColor();
@@ -75,13 +75,19 @@ test("Selecting womens T-shirts and filtering", async ({ page }) => {
   await uniqloFiltergBySizeAndPrice.clearAllSelections();
 });
 
-test("Selecting color,size,quantity on the Product Detail Page and adding to the cart", async ({ page }) => {
+test("Selecting color,size,quantity on the Product Detail Page and adding to the cart", async ({
+  page,
+}) => {
   const uniqloSelectingColorSizeAndQuantity = new UniqloProductDetailPage(page);
 
   await uniqloSelectingColorSizeAndQuantity.searchForMenItem();
   await uniqloSelectingColorSizeAndQuantity.clickSearchBar();
-  await uniqloSelectingColorSizeAndQuantity.clickOnTheSweaterOption("SWEATERS & KNITWEAR");
-  await uniqloSelectingColorSizeAndQuantity.clickOnTheSweaterOptionSecondTime("SWEATERS & KNITWEAR");
+  await uniqloSelectingColorSizeAndQuantity.clickOnTheSweaterOption(
+    "SWEATERS & KNITWEAR"
+  );
+  await uniqloSelectingColorSizeAndQuantity.clickOnTheSweaterOptionSecondTime(
+    "SWEATERS & KNITWEAR"
+  );
   await uniqloSelectingColorSizeAndQuantity.itemSelection();
   await uniqloSelectingColorSizeAndQuantity.colorSelection();
   await uniqloSelectingColorSizeAndQuantity.sizeSelection("XL");
@@ -92,24 +98,32 @@ test("Selecting color,size,quantity on the Product Detail Page and adding to the
   await uniqloSelectingColorSizeAndQuantity.getCartItemCount();
 });
 
-
 test("Change the quantity and remove an item in the shopping cart", async ({
   page,
 }) => {
   const uniqloChangeQuantity = new UniqloShoppingCartPage(page);
 
-  await uniqloChangeQuantity.searchForKidsItem();
-  await uniqloChangeQuantity.filterProduct("Shorts");
-  await uniqloChangeQuantity.itemSelection();
-  await uniqloChangeQuantity.clickAgeButton();
-  await uniqloChangeQuantity.ageSelection("-8Y(130)");
-  await uniqloChangeQuantity.clickDropDown();
-  await uniqloChangeQuantity.quantitySelection("2");
-  await uniqloChangeQuantity.addItemToTheShoppingCart();
-  await uniqloChangeQuantity.viewItemInTheShoppingCart();
-  await uniqloChangeQuantity.waitForAndClickOkButton();
-  await uniqloChangeQuantity.clickOnNewQuantity();
-  await uniqloChangeQuantity.increaseQuantity("2");
+  await test.step(`Add children's pants to cart.`, async () => {
+    await uniqloChangeQuantity.chooseApparelCategory("kids");
+    await uniqloChangeQuantity.clickSearchButton();
+    await uniqloChangeQuantity.selectItemType("Bottoms");
+    await uniqloChangeQuantity.selectItemSpeciality("Pants");
+    await uniqloChangeQuantity.itemSelection();
+    await uniqloChangeQuantity.clickAgeButton();
+    await uniqloChangeQuantity.clickDropDown();
+    await uniqloChangeQuantity.quantitySelection("2");
+    await uniqloChangeQuantity.addItemToTheShoppingCart();
+  });
+
+  await test.step(`View the childrens pants in the cart.`, async () => {
+    await uniqloChangeQuantity.viewItemInTheShoppingCart();
+    await uniqloChangeQuantity.waitForAndClickOkButton();
+  });
+
+  await test.step(`Change the quantity of the pants to 2.`, async () => {
+    await uniqloChangeQuantity.clickOnNewQuantity();
+    await uniqloChangeQuantity.increaseQuantity("2");
+  });
 });
 
 test("Proceed to checkout and fill out the form", async ({ page }) => {

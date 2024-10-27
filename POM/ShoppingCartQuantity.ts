@@ -1,10 +1,12 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 export class UniqloShoppingCartPage {
-  readonly kidSectionLink: Locator;
-  itemFilter: Locator;
+  kidSectionLink: Locator;
+  kidItemSearchButton: Locator;
+  selectItemSection: Locator;
+  selectItemSectionSecondTime: Locator;
   readonly selectItem: Locator;
-  readonly ageButton: Locator;
+  ageButton: Locator;
   selectAge: Locator;
   readonly dropDownButton: Locator;
   readonly clickQuantity: Locator;
@@ -17,9 +19,11 @@ export class UniqloShoppingCartPage {
   readonly page: Page;
 
   constructor(page: Page) {
-    this.kidSectionLink = page.getByRole("link", { name: "kids" });
-    this.selectItem = page.locator('[data-test="product-card-E470711-000"] a');
-    this.ageButton = page.locator('[data-test="product-card-E470711-000"] a');
+    this.kidItemSearchButton = page.getByRole('button').nth(3);
+    this.selectItemSection = page.getByRole('button', { name: 'BOTTOMS' });
+    this.selectItemSectionSecondTime = page.getByRole('link', { name: 'Pants', exact: true });
+    this.selectItem = page.locator('[data-test="product-card-E474573-000"]').getByRole('link', { name: 'Favorite PILE LINED SWEAT' })
+    
     this.dropDownButton = page.locator('[data-test="quantity-dropdown"]');
     this.shoppingCartButton = page.locator('[data-test="add-to-cart-button"]');
     this.viewShoppingCart = page.locator('[data-test="view-cart-button"]');
@@ -29,38 +33,43 @@ export class UniqloShoppingCartPage {
     this.page = page;
   }
 
-  async searchForKidsItem() {
+  async chooseApparelCategory(category: string) {
+    this.kidSectionLink = this.page.getByRole('tab', { name: category });
     await this.page.waitForTimeout(5000);
     await expect(this.kidSectionLink).toBeVisible();
-    await this.kidSectionLink.hover();
+    await this.kidSectionLink.click();
   }
 
-  async filterProduct(filterType: string) {
-    this.itemFilter = this.page
-      .locator("a")
-      .filter({ hasText: filterType })
-      .first();
-    await expect(this.itemFilter).toBeVisible();
-    await this.itemFilter.click();
+  async clickSearchButton(){
+    this.kidItemSearchButton = this.page.getByRole('button').nth(3);
+    await this.kidItemSearchButton.click({force: true});
   }
+
+
+  async selectItemType(filteringOption: string = "Bottoms") {
+    this.selectItemSection = this.page.getByRole('button', { name: filteringOption });
+    await expect(this.selectItemSection).toBeVisible();
+    await this.selectItemSection.click();
+  }
+
+  async selectItemSpeciality(filterOption: string) {
+    this.selectItemSectionSecondTime = this.page.getByRole('link', { name: filterOption, exact: true });
+    await expect(this.selectItemSectionSecondTime).toBeVisible();
+    await this.selectItemSectionSecondTime.click();
+  }
+
 
   async itemSelection() {
     await expect(this.selectItem).toBeVisible();
     await this.selectItem.click();
   }
 
-  async clickAgeButton() {
+  async clickAgeButton(ageRange: string = "3-4Y(110)") {
+    this.ageButton = this.page.getByRole('img', { name: ageRange });
     await expect(this.ageButton).toBeVisible();
     await this.ageButton.click();
   }
 
-  async ageSelection(ageRange: string) {
-    this.selectAge = this.page
-      .locator('[data-test="\\37 -8Y\\(130\\)"]')
-      .getByText(ageRange);
-    await expect(this.selectAge).toBeVisible();
-    await this.selectAge.click();
-  }
   async clickDropDown() {
     await expect(this.dropDownButton).toBeVisible();
     await this.dropDownButton.click();

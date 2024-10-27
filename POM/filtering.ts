@@ -28,9 +28,7 @@ export class UniqloFilterPage {
     this.page = page;
   }
 
-  async searchItem(){
-    await this.searchButton.click({force: true});
-  }
+  
 
   async selectItemType(filteringOption: string) {
     this.selectingOption = this.page.getByRole('button', { name: filteringOption });
