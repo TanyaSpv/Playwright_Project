@@ -7,6 +7,7 @@ import { UniqloSortingByPrice } from "../POM/sortingbypricepom";
 import { UniqloFilterPage } from "../POM/filtering";
 import { UniqloShoppingCartPage } from "../POM/ShoppingCartQuantity";
 import { UniqloProductDetailPage } from "../POM/SelectingItemParameters";
+import { UniqloProceedToCheckoutPage } from "../POM/ProceedToCheckout";
 // Read from default ".env" file.
 dotenv.config();
 
@@ -126,53 +127,28 @@ test("Change the quantity and remove an item in the shopping cart", async ({
   });
 });
 
-test("Proceed to checkout and fill out the form", async ({ page }) => {
-  test.slow();
-  await expect(page.getByRole("link", { name: "kids" })).toBeVisible();
-  await page.getByRole("link", { name: "kids" }).hover();
+test("Proceed to checkout", async ({ page }) => {
+  const uniqloProceedToCheckout = new UniqloProceedToCheckoutPage(page);
 
-  await expect(
-    page.locator("a").filter({ hasText: "Shorts" }).first()
-  ).toBeVisible();
-  await page.locator("a").filter({ hasText: "Shorts" }).first().click();
+  await test.step(`Add children's shorts to cart.`, async () => {
+    await uniqloProceedToCheckout.chooseApparelCategory("kids");
+    await uniqloProceedToCheckout.clickSearchButton();
+    await uniqloProceedToCheckout.selectItemType("Bottoms");
+    await uniqloProceedToCheckout.selectItemSpeciality();
+    await uniqloProceedToCheckout.itemSelection();
+    await uniqloProceedToCheckout.clickAgeButton();
+    await uniqloProceedToCheckout.addItemToTheShoppingCart();
+  });
 
-  await expect(
-    page.locator('[data-test="product-card-E470711-000"] a')
-  ).toBeVisible();
-  await page.locator('[data-test="product-card-E470711-000"] a').click();
+  await test.step(`View the childrens shorts in the cart.`, async () => {
+    await uniqloProceedToCheckout.viewItemInTheShoppingCart();
+  });
 
-  // adding age
-  await expect(
-    page.locator('[data-test="\\37 -8Y\\(130\\)"]').getByText("-8Y(130)")
-  ).toBeVisible();
-  await page
-    .locator('[data-test="\\37 -8Y\\(130\\)"]')
-    .getByText("-8Y(130)")
-    .click();
-
-  await expect(page.locator('[data-test="quantity-dropdown"]')).toBeVisible();
-  await page.locator('[data-test="quantity-dropdown"]').click();
-
-  await expect(page.getByRole("option", { name: "1" })).toBeVisible();
-  await page.getByRole("option", { name: "1" });
-
-  await expect(page.locator('[data-test="add-to-cart-button"]')).toBeVisible();
-  await page.locator('[data-test="add-to-cart-button"]').click();
-
-  await expect(page.locator('[data-test="view-cart-button"]')).toBeVisible();
-  await page.locator('[data-test="view-cart-button"]').click();
-
-  await page.waitForTimeout(5000);
-
-  if ((await page.getByRole("button", { name: "OK" }).count()) > 0) {
-    await page.getByRole("button", { name: "OK" }).click();
-  }
-
-  await expect(page.locator('[data-test="checkout-button"]')).toBeVisible();
-  await page.locator('[data-test="checkout-button"]').click();
-
-  await page.waitForTimeout(5000);
+  await test.step(`Proceed to checkout.`, async () => {
+    await uniqloProceedToCheckout.clickCheckoutButton();
+  });
 });
+
 
 test.fixme("Creating and removing wish list", async ({ page }) => {
   test.slow();
