@@ -48,8 +48,6 @@ jobs:
     name: MegaLinter
     runs-on: ubuntu-latest
 
-
-
     steps:
       # Git Checkout
       - name: Checkout Code
