@@ -179,11 +179,11 @@ test.fixme("Proceed to checkout", async ({ page }) => {
   await test.step(`Add children's shorts to cart.`, async () => {
     await uniqloShoppingCartPage.chooseApparelCategory("kids");
     await uniqloShoppingCartPage.clickSearchButton();
-    await uniqloProceedToCheckout.selectItemType("Bottoms");
+    await uniqloShoppingCartPage.selectItemType("Bottoms");
     await uniqloShoppingCartPage.selectItemSpeciality("Shorts");
     await uniqloProductDetailPage.itemSelection();
-    await uniqloProceedToCheckout.clickAgeButton();
-    await uniqloProceedToCheckout.addItemToTheShoppingCart();
+    await uniqloShoppingCartPage.clickAgeButton();
+    await uniqloShoppingCartPage.addItemToTheShoppingCart();
   });
 
   await test.step(`View the childrens shorts in the cart.`, async () => {
@@ -227,11 +227,12 @@ test.fixme("Fill out the Check out form", async ({ page }) => {
   const uniqloCheckoutForm = new UniqloCheckoutFormPage(page);
   const uniqloWishList = new UniqloWishListPage(page);
   const uniqloProductDetailPage = new UniqloProductDetailPage(page);
+  const uniqloShoppingCartPage = new UniqloShoppingCartPage(page);
   await test.step(`Add children's shorts to cart.`, async () => {
     await uniqloWishList.navigateToClothingCategory("kids","Bottoms","pants");
     await uniqloProductDetailPage.itemSelection();
     await uniqloCheckoutForm.clickAgeButton();
-    await uniqloCheckoutForm.addItemToTheShoppingCart();
+    await uniqloShoppingCartPage.addItemToTheShoppingCart();
   });
 
   await test.step(`View the childrens shorts in the cart.`, async () => {
