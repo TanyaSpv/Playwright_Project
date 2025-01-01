@@ -231,7 +231,7 @@ test.fixme("Fill out the Check out form", async ({ page }) => {
   await test.step(`Add children's shorts to cart.`, async () => {
     await uniqloWishList.navigateToClothingCategory("kids","Bottoms","pants");
     await uniqloProductDetailPage.itemSelection();
-    await uniqloCheckoutForm.clickAgeButton();
+    await uniqloShoppingCartPage.clickAgeButton();
     await uniqloShoppingCartPage.addItemToTheShoppingCart();
   });
 
