@@ -9,6 +9,7 @@ import { UniqloShoppingCartPage } from "../POM/ShoppingCartQuantity";
 import { UniqloProductDetailPage } from "../POM/SelectingItemParameters";
 import { UniqloProceedToCheckoutPage } from "../POM/ProceedToCheckout";
 import { UniqloWishListPage } from "../POM/WishList";
+import { UniqloCheckoutFormPage } from "../POM/CheckoutForm";
 // Read from default ".env" file.
 dotenv.config();
 
@@ -20,7 +21,9 @@ test.beforeEach(async ({ page }) => {
   await loginPage.enterUserName(`${process.env.EMAIL}`);
   await loginPage.enterPassword(`${process.env.PASSWORD}`);
   await loginPage.loginUser();
-  await page.goto("https://www.uniqlo.com/ca/en/");
+  await page.waitForURL('https://www.uniqlo.com/ca/en/member');
+  await page.getByRole('button', { name: 'Home' }).click();
+  await page.waitForURL('https://www.uniqlo.com/ca/en/');
 });
 
 test("searching for a hat", async ({ page }) => {
@@ -33,29 +36,39 @@ test("searching for a hat", async ({ page }) => {
   expect(searchPage.isItemFound()).toBeTruthy();
 });
 
-test("Selecting womens T-shirts and sorting them by price", async ({
-  page,
-}) => {
+test("Selecting womens T-shirts and sorting them by price", async ({ page }) => {
   const uniqloSortByPrice = new UniqloSortingByPrice(page);
 
-  await uniqloSortByPrice.searchItem();
-  await uniqloSortByPrice.selectItem();
-  await page.waitForTimeout(1000);
-  await uniqloSortByPrice.selectSpecificItem();
-  await uniqloSortByPrice.clickFilterByPrice();
-  await uniqloSortByPrice.filteringOptions();
-  await page.waitForTimeout(1000);
-  await uniqloSortByPrice.getFirstItemInnerText();
-  await uniqloSortByPrice.getLastItemInnerText();
-  expect(uniqloSortByPrice.firstTextAmt).toBeLessThanOrEqual(
-    uniqloSortByPrice.lastTextAmt
-  );
+  await test.step("Search for item", async () => {
+    await uniqloSortByPrice.searchItem();
+  });
+
+  await test.step("Select item", async () => {
+    await uniqloSortByPrice.selectItem();
+    await page.waitForTimeout(1000);
+    await uniqloSortByPrice.selectSpecificItem();
+  });
+
+  await test.step("Filter by price", async () => {
+    await uniqloSortByPrice.clickFilterByPrice();
+    await uniqloSortByPrice.filteringOptions("All");
+    await page.waitForTimeout(1000);
+  });
+
+  await test.step("Verify sorting by price", async () => {
+    await uniqloSortByPrice.getFirstItemInnerText();
+    await uniqloSortByPrice.getLastItemInnerText();
+    expect(uniqloSortByPrice.firstTextAmt).toBeLessThanOrEqual(
+      uniqloSortByPrice.lastTextAmt
+    );
+  });
 });
 
 test("Selecting womens T-shirts and filtering", async ({ page }) => {
   const uniqloFiltergBySizeAndPrice = new UniqloFilterPage(page);
+  const uniqloSortByPrice = new UniqloSortingByPrice(page);
 
-  await uniqloFiltergBySizeAndPrice.searchItem();
+  await uniqloSortByPrice.searchItem();
   await uniqloFiltergBySizeAndPrice.selectItemType("T-Shirts, Sweats & Fleece");
   await uniqloFiltergBySizeAndPrice.selectItemSpeciality("T-shirts");
   await uniqloFiltergBySizeAndPrice.clickOnFilterBySize();
@@ -177,93 +190,56 @@ test("Creating and removing wish list", async ({ page }) => {
   });
 });
 
-test.fixme("Fill out the checkout form", async ({ page }) => {
-  test.slow();
+test("Fill out the Check out form", async ({ page }) => {
+  const uniqloCheckoutForm = new UniqloCheckoutFormPage(page);
+  const uniqloWishList = new UniqloWishListPage(page);
+  await test.step(`Add children's shorts to cart.`, async () => {
+    await uniqloWishList.navigateToClothingCategory("kids","Bottoms","pants");
+    await uniqloCheckoutForm.itemSelection();
+    await uniqloCheckoutForm.clickAgeButton();
+    await uniqloCheckoutForm.addItemToTheShoppingCart();
+  });
 
-  //TODO: Get to checkout form to fill out.
+  await test.step(`View the childrens shorts in the cart.`, async () => {
+    await uniqloCheckoutForm.viewItemInTheShoppingCart();
+  });
 
-  await expect(
-    page.getByPlaceholder("Please enter your first name")
-  ).toBeVisible();
-  await page
-    .getByPlaceholder("Please enter your first name")
-    .scrollIntoViewIfNeeded();
-  await page.getByPlaceholder("Please enter your first name").fill("John");
-
-  await page.waitForTimeout(2000);
-
-  await expect(
-    page.getByPlaceholder("Please enter your last name (")
-  ).toBeVisible();
-  await page.getByPlaceholder("Please enter your last name").fill("Doe");
-
-  await page.waitForTimeout(2000);
-
-  await expect(
-    page.getByPlaceholder("Please enter your Canadian")
-  ).toBeVisible();
-  await page.getByPlaceholder("Please enter your Canadian").fill("E1C1B2");
-
-  await page.waitForTimeout(2000);
-
-  await expect(page.getByPlaceholder("Street and number, c/o.")).toBeVisible();
-  await page
-    .getByPlaceholder("Street and number, c/o.")
-    .fill("Albert Street 118");
-
-  await page.waitForTimeout(2000);
-
-  await expect(page.getByPlaceholder("Apt, suite/unit, floor,")).toBeVisible();
-  await page
-    .getByPlaceholder("Street and number, c/o.")
-    .fill("Apt 25, second floor");
-
-  await page.waitForTimeout(2000);
-
-  await expect(page.getByPlaceholder("Please enter your city.")).toBeVisible();
-  await page.getByPlaceholder("Please enter your city.").fill("Moncton");
-
-  await page.waitForTimeout(2000);
-
-  await expect(page.getByPlaceholder("Please enter your phone")).toBeVisible();
-  await page.getByPlaceholder("Please enter your phone").fill("7052541867");
-
-  await page.waitForTimeout(2000);
-
-  await expect(
-    page.locator("label").filter({ hasText: "Please confirm that the" })
-  ).toBeVisible();
-
-  await page.waitForTimeout(2000);
-
-  await page
-    .locator("label")
-    .filter({ hasText: "Please confirm that the" })
-    .check();
-
-  await page.waitForTimeout(2000);
-
-  await expect(
-    page.locator("label").filter({ hasText: "Please confirm that the" })
-  ).toBeChecked();
-
-  if (
-    (await page
-      .locator("label")
-      .filter({ hasText: "Use as billing address" })
-      .count()) > 0
-  ) {
-    await page
-      .locator("label")
-      .filter({ hasText: "Use as billing address" })
-      .check();
-    await expect(
-      page.locator("label").filter({ hasText: "Use as billing address" })
-    ).toBeChecked();
-  }
-
-  await page.waitForTimeout(2000);
+  await test.step(`Proceed to checkout.`, async () => {
+    await uniqloCheckoutForm.clickCheckoutButton();
+  });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 test("Continue to payment and fill out the form", async ({ page }) => {
   test.slow();

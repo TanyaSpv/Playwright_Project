@@ -37,22 +37,15 @@ export class UniqloSortingByPrice {
     await this.selectSpecificButton.click({force: true});
   }
 
-  async clickFilterByPrice() {
-    this.filterButton = this.page.locator('[data-test="sort-by"]');
+  async   clickFilterByPrice() {
+    this.filterButton = this.page.locator('li').filter({ hasText: 'Price' }).locator('div');
     await this.filterButton.click();
   }
 
-  async filteringOptions(ascending: boolean = true) {
-    if (ascending) {
-      this.priceFilterLowToHigh = this.page.getByRole("option", {
-        name: "Price: High to low",
-      });
-    } else {
-      this.priceFilterLowToHigh = this.page.getByRole("option", {
-        name: "Price: Low to high",
-      });
-    }
-    return this.priceFilterLowToHigh.click();
+  async filteringOptions(priceFilter: string) {
+    const filterLocator = this.page.locator('#utilityBarER label').filter({ hasText: priceFilter });
+    await filterLocator.click();
+    await this.priceFilterLowToHigh.click();
   }
 
   async getFirstItemInnerText() {

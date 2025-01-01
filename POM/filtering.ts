@@ -17,9 +17,9 @@ export class UniqloFilterPage {
 
   constructor(page: Page) {
     this.searchButton = page.getByRole('button').nth(3);
-    this.itemFilterSize = page.locator('[data-test="filter-by-size"]');
-    this.itemFilterColor = page.locator('[data-test="filter-by-colour"]');
-    this.itemFilterPrice = page.locator('[data-test="filter-by-price"]');
+    this.itemFilterSize = page.locator('li').filter({ hasText: 'Size' }).locator('div');
+    this.itemFilterColor = page.locator('li').filter({ hasText: 'Color' }).locator('div');
+    this.itemFilterPrice = page.locator('li').filter({ hasText: 'Price' }).locator('div');
     this.sizeFilterSelected = page.locator(".fr-flitem.col6.right").nth(1);
     this.priceFilterSelected = page
       .locator("label")
