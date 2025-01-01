@@ -30,17 +30,6 @@ export class UniqloCheckoutFormPage {
     this.page = page;
   }
 
-  async clickSearchButton(){
-    await this.kidItemSearchButton.click({force: true});
-    await this.page.waitForTimeout(3000); 
-  }
-
-  async clickAgeButton(ageRange: string = "3-4Y(110)") {
-    this.ageButton = this.page.getByRole('img', { name: ageRange });
-    await expect(this.ageButton).toBeVisible();
-    await this.ageButton.click();
-  }
-
   async clickCheckoutButton() {
     await expect(this.checkoutButton).toBeVisible();
     await this.checkoutButton.click();
