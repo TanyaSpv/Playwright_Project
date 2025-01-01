@@ -26,14 +26,6 @@ export class UniqloProceedToCheckoutPage {
     this.page = page;
   }
 
-
-  async chooseApparelCategory(category: string) {
-    this.kidSectionLink = this.page.getByRole('tab', { name: category });
-    await this.page.waitForTimeout(5000);
-    await expect(this.kidSectionLink).toBeVisible();
-    await this.kidSectionLink.click();
-  }
-
   async clickSearchButton(){
     this.kidItemSearchButton = this.page.getByRole('button').nth(3);
     await this.kidItemSearchButton.click({force: true});
@@ -51,13 +43,6 @@ export class UniqloProceedToCheckoutPage {
     this.selectItemSectionSecondTime = this.page.getByRole('link', { name: filterOption, exact: true });
     await expect(this.selectItemSectionSecondTime).toBeVisible();
     await this.selectItemSectionSecondTime.click();
-  }
-
-
-  async itemSelection() {
-    await this.page.waitForTimeout(10000);
-    await expect(this.selectItem).toBeVisible();
-    await this.selectItem.click();
   }
 
   async clickAgeButton(ageRange: string = "3-4Y(110)") {
