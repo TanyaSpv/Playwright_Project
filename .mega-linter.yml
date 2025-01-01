@@ -17,6 +17,7 @@ APPLY_FIXES: all
 DISABLE:
   - COPYPASTE # Comment to enable checks of excessive copy-pastes
   - SPELL # Comment to enable checks of spelling mistakes
+  - TYPESCRIPT_STANDARD # Disables ts-standard
 
 SHOW_ELAPSED_TIME: false
 
