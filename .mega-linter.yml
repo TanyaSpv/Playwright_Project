@@ -18,6 +18,7 @@ DISABLE:
   - COPYPASTE # Comment to enable checks of excessive copy-pastes
   - SPELL # Comment to enable checks of spelling mistakes
   - TYPESCRIPT_STANDARD # Disables ts-standard
+  - YAML_V8R # Disables YAML validation using v8r
 
 SHOW_ELAPSED_TIME: false
 
