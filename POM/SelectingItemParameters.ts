@@ -50,8 +50,8 @@ export class UniqloProductDetailPage {
   }
 
   async clickOnTheSweaterOptionSecondTime(filterType: string) {
-    await expect(this.itemFilterSecondTime).toBeVisible();
-    await this.itemFilterSecondTime.click();
+    await expect(this.itemFilterSecondTime.first()).toBeVisible();
+    await this.itemFilterSecondTime.first().click();
   }
   async itemSelection() {
     await expect(this.selectItem).toBeVisible();

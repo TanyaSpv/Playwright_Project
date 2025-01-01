@@ -39,6 +39,6 @@ export class UniqloLoginPage {
   }
 
   async loginUser(){
-    await this.loginButtonComplete.click();
+    await this.loginButtonComplete.click({force: true});
   }
 }

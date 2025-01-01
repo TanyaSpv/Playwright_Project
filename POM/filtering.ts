@@ -7,7 +7,7 @@ export class UniqloFilterPage {
   readonly itemFilterSize: Locator;
   itemFilterSizeM: Locator;
   readonly itemFilterColor: Locator;
-  itemFilterColorWhite: Locator;
+  itemFilterColorChoice: Locator;
   readonly itemFilterPrice: Locator;
   itemFilterPriceFrom20$: Locator;
   readonly sizeFilterSelected: Locator;
@@ -47,20 +47,17 @@ export class UniqloFilterPage {
   }
 
   async clickOnFilterBySpecificSize(size: string) {
-    this.itemFilterSizeM = this.page
-      .locator(`[data-test="filter-${size}"]`)
-      .getByText(size);
-    return this.itemFilterSizeM.click();
+    const sizeLocator = this.page.locator('span').filter({ hasText: new RegExp(`^${size}$`) }).first();
+    await sizeLocator.click({force: true});
   }
   async clickOnFilterByColor() {
     await this.itemFilterColor.click();
   }
 
   async clickOnFilterBySpecificColor(color: string) {
-    this.itemFilterColorWhite = this.page.locator(
-      `[data-test="filter-${color}"] label div`
-    );
-    await this.itemFilterColorWhite.click();
+    this.itemFilterColorChoice = this.page.locator(`#utilityBarER [data-test="filter-${color.toUpperCase()}"] label`)
+
+    await this.itemFilterColorChoice.click();
   }
 
   async clickOnFilterByPrice() {
@@ -68,10 +65,8 @@ export class UniqloFilterPage {
   }
 
   async clickOnFilterBySpecificPrice(price: string) {
-    this.itemFilterPriceFrom20$ = this.page
-      .locator("label")
-      .filter({ hasText: price });
-    return this.itemFilterPriceFrom20$.click();
+    this.itemFilterPriceFrom20$ = this.page.locator('#utilityBarER').getByText(price)
+    this.itemFilterPriceFrom20$.click({force: true});
   }
 
   async sizeFilterOptionSelected(size: string) {

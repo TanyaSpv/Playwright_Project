@@ -5,7 +5,6 @@ export class UniqloSortingByPrice {
   selectButton: Locator;
   selectSpecificButton: Locator;
   filterButton: Locator;
-  priceFilterLowToHigh: Locator;
   firstItemElement: Locator;
   lastItemElement: Locator;
   readonly cleanedString: string;
@@ -16,6 +15,7 @@ export class UniqloSortingByPrice {
   lastItemInnerText: string[];
   firstTextAmt: number;
   lastTextAmt: number;
+
 
   constructor(page: Page) {
     this.page = page;
@@ -42,32 +42,31 @@ export class UniqloSortingByPrice {
     await this.filterButton.click();
   }
 
-  async filteringOptions(priceFilter: string) {
+  async filteringOptions(priceFilter: string, itemFilter: string) {
     const filterLocator = this.page.locator('#utilityBarER label').filter({ hasText: priceFilter });
     await filterLocator.click();
-    await this.priceFilterLowToHigh.click();
+    await this.page.locator('header').filter({ hasText: itemFilter}).locator('div').click();
   }
 
   async getFirstItemInnerText() {
-    this.firstItemElement = this.page
-      .locator(
-        `//article[contains(@class, 'fr-grid-item w4')]//div[@class='price fr-no-uppercase']`
-      )
-      .first();
-    this.firstItemInnerText = await this.firstItemElement.allInnerTexts()[0];
+    this.firstItemElement = this.page.locator('.price-limited-ER').nth(0);
+    this.firstItemInnerText = await this.firstItemElement.allInnerTexts();
+    //I need this.firstItemInnerText to strip the $ sign and convert to a number
+    this.firstItemInnerText = this.firstItemInnerText.map((item) => {
+      return item.replace(/[^\d.]/g, "");
+    });
 
-    let innerText = this.firstItemElement.toString().replace(/[^\d.]/g, "");
-    this.firstTextAmt = parseFloat(innerText);
+    this.firstTextAmt = parseFloat(this.firstItemInnerText[0]);
   }
 
   async getLastItemInnerText() {
-    this.lastItemElement = this.page
-      .locator(
-        `//article[contains(@class, 'fr-grid-item w4')]//div[@class='price fr-no-uppercase']`
-      )
-      .last();
-    this.lastItemInnerText = await this.lastItemElement.allInnerTexts()[0];
-    let innerText =  await this.lastItemElement.toString().replace(/[^\d.]/g,"");
-    this.lastTextAmt = parseFloat(innerText);
+    this.lastItemElement = this.page.locator('.price-limited-ER').last();
+    this.lastItemInnerText = await this.lastItemElement.allInnerTexts();
+    // Strip the $ sign and convert to a number
+    this.lastItemInnerText = this.lastItemInnerText.map((item) => {
+      return item.replace(/[^\d.]/g, "");
+    });
+
+    this.lastTextAmt = parseFloat(this.lastItemInnerText[0]);
   }
 }

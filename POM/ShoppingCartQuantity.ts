@@ -35,7 +35,6 @@ export class UniqloShoppingCartPage {
 
   async chooseApparelCategory(category: string) {
     this.kidSectionLink = this.page.getByRole('tab', { name: category });
-    await this.page.waitForTimeout(5000);
     await expect(this.kidSectionLink).toBeVisible();
     await this.kidSectionLink.click();
   }
