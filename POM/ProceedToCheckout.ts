@@ -26,34 +26,10 @@ export class UniqloProceedToCheckoutPage {
     this.page = page;
   }
 
-  async clickSearchButton(){
-    this.kidItemSearchButton = this.page.getByRole('button').nth(3);
-    await this.kidItemSearchButton.click({force: true});
-  }
-
-
-  async selectItemType(filteringOption: string = "Bottoms") {
-    this.selectItemSection = this.page.getByRole('button', { name: filteringOption });
-    await expect(this.selectItemSection).toBeVisible();
-    await this.selectItemSection.click();
-  }
-
-  async selectItemSpeciality(filterOption: string = "Shorts") {
-    await this.page.waitForTimeout(5000);
-    this.selectItemSectionSecondTime = this.page.getByRole('link', { name: filterOption, exact: true });
-    await expect(this.selectItemSectionSecondTime).toBeVisible();
-    await this.selectItemSectionSecondTime.click();
-  }
-
   async clickAgeButton(ageRange: string = "3-4Y(110)") {
     this.ageButton = this.page.getByRole('img', { name: ageRange });
     await expect(this.ageButton).toBeVisible();
     await this.ageButton.click();
-  }
-
-  async clickDropDown() {
-    await expect(this.dropDownButton).toBeVisible();
-    await this.dropDownButton.click();
   }
 
   async quantitySelection(quantity: string) {

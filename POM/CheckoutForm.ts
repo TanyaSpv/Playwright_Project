@@ -37,7 +37,6 @@ export class UniqloCheckoutFormPage {
 
 
   async selectItemType(filteringOption: string = "Bottoms") {
-    //getByRole('button', { name: 'Bottoms' })
     this.selectItemSection = this.page.getByRole('button', { name: filteringOption });
     await expect(this.selectItemSection).toBeVisible({ timeout: 5000 });
     await this.selectItemSection.click();

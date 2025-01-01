@@ -178,9 +178,9 @@ test.fixme("Proceed to checkout", async ({ page }) => {
 
   await test.step(`Add children's shorts to cart.`, async () => {
     await uniqloShoppingCartPage.chooseApparelCategory("kids");
-    await uniqloProceedToCheckout.clickSearchButton();
+    await uniqloShoppingCartPage.clickSearchButton();
     await uniqloProceedToCheckout.selectItemType("Bottoms");
-    await uniqloProceedToCheckout.selectItemSpeciality();
+    await uniqloShoppingCartPage.selectItemSpeciality("Shorts");
     await uniqloProductDetailPage.itemSelection();
     await uniqloProceedToCheckout.clickAgeButton();
     await uniqloProceedToCheckout.addItemToTheShoppingCart();
