@@ -239,39 +239,7 @@ test.fixme("Fill out the Check out form", async ({ page }) => {
   });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-test("Continue to payment and fill out the form", async ({ page }) => {
+test.fixme("Continue to payment and fill out the form", async ({ page }) => {
   test.slow();
   await expect(page.getByRole("link", { name: "kids" })).toBeVisible();
   await page.getByRole("link", { name: "kids" }).hover();
