@@ -21,6 +21,7 @@ DISABLE_LINTERS:
   - YAML_V8R # Disables YAML validation using v8r
   - SPELL_CSPELL # Disables cspell
   - SPELL_LYCHEE # Disables lychee
+  - REPOSITORY_TRUFFLEHOG # Disables trufflehog
 
 SHOW_ELAPSED_TIME: false
 
