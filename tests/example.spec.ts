@@ -236,7 +236,7 @@ test.fixme("Fill out the Check out form", async ({ page }) => {
   });
 
   await test.step(`View the childrens shorts in the cart.`, async () => {
-    await uniqloCheckoutForm.viewItemInTheShoppingCart();
+    await uniqloShoppingCartPage.viewItemInTheShoppingCart();
   });
 
   await test.step(`Proceed to checkout.`, async () => {

@@ -35,23 +35,10 @@ export class UniqloCheckoutFormPage {
     await this.page.waitForTimeout(3000); 
   }
 
-
-  async selectItemType(filteringOption: string = "Bottoms") {
-    this.selectItemSection = this.page.getByRole('button', { name: filteringOption });
-    await expect(this.selectItemSection).toBeVisible({ timeout: 5000 });
-    await this.selectItemSection.click();
-  }
-
-
   async clickAgeButton(ageRange: string = "3-4Y(110)") {
     this.ageButton = this.page.getByRole('img', { name: ageRange });
     await expect(this.ageButton).toBeVisible();
     await this.ageButton.click();
-  }
-  
-  async viewItemInTheShoppingCart() {
-    await expect(this.viewShoppingCart).toBeVisible();
-    await this.viewShoppingCart.click();
   }
 
   async clickCheckoutButton() {
