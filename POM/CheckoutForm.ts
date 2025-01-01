@@ -30,14 +30,6 @@ export class UniqloCheckoutFormPage {
     this.page = page;
   }
 
-
-  async chooseApparelCategory(category: string) {
-    this.kidSectionLink = this.page.getByRole('tab', { name: category });
-    await this.page.waitForTimeout(5000);
-    await expect(this.kidSectionLink).toBeVisible();
-    await this.kidSectionLink.click();
-  }
-
   async clickSearchButton(){
     await this.kidItemSearchButton.click({force: true});
     await this.page.waitForTimeout(3000); 
@@ -58,12 +50,6 @@ export class UniqloCheckoutFormPage {
     await this.selectItemSectionSecondTime.click();
   }
 
-
-  async itemSelection() {
-    await this.page.waitForTimeout(10000);
-    await expect(this.selectItem).toBeVisible();
-    await this.selectItem.click();
-  }
 
   async clickAgeButton(ageRange: string = "3-4Y(110)") {
     this.ageButton = this.page.getByRole('img', { name: ageRange });

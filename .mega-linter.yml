@@ -19,6 +19,8 @@ DISABLE_LINTERS:
   - SPELL # Comment to enable checks of spelling mistakes
   - TYPESCRIPT_STANDARD # Disables ts-standard
   - YAML_V8R # Disables YAML validation using v8r
+  - SPELL_CSPELL # Disables cspell
+  - SPELL_LYCHEE # Disables lychee
 
 SHOW_ELAPSED_TIME: false
 

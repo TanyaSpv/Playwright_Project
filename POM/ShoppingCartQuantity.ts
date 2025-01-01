@@ -57,12 +57,6 @@ export class UniqloShoppingCartPage {
     await this.selectItemSectionSecondTime.click();
   }
 
-
-  async itemSelection() {
-    await expect(this.selectItem).toBeVisible();
-    await this.selectItem.click();
-  }
-
   async clickAgeButton(ageRange: string = "3-4Y(110)") {
     this.ageButton = this.page.getByRole('img', { name: ageRange });
     await expect(this.ageButton).toBeVisible();
@@ -72,12 +66,6 @@ export class UniqloShoppingCartPage {
   async clickDropDown() {
     await expect(this.dropDownButton).toBeVisible();
     await this.dropDownButton.click();
-  }
-
-  async quantitySelection(quantity: string) {
-    this.selectQuantity = this.page.getByRole("option", { name: quantity });
-    await expect(this.selectQuantity).toBeVisible();
-    await this.selectQuantity.click();
   }
 
   async addItemToTheShoppingCart() {
