@@ -13,14 +13,6 @@ Please delete options that are not relevant.
 ## How Has This Been Tested?
 Please describe the tests that you ran to verify your changes. Please also note any relevant details for your test configuration.
 
-- [ ] Test A
-- [ ] Test B
-
-**Test Configuration**:
-* Firmware version:
-* Hardware:
-* Toolchain:
-* SDK:
 
 ## Checklist:
 - [ ] My code follows the style guidelines of this project
