@@ -14,7 +14,7 @@ APPLY_FIXES: all
 # default
 # ENABLE_LINTERS:
 
-DISABLE:
+DISABLE_LINTERS:
   - COPYPASTE # Comment to enable checks of excessive copy-pastes
   - SPELL # Comment to enable checks of spelling mistakes
   - TYPESCRIPT_STANDARD # Disables ts-standard
