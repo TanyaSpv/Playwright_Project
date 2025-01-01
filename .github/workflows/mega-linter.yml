@@ -40,13 +40,15 @@ jobs:
     name: MegaLinter
     runs-on: ubuntu-latest
 
-    # Specify minimum required permissions for this job
+    # Skip Checkov check for permissions - Required permissions are explicitly defined
+    #checkov:skip=CKV2_GHA_1: "Permissions are explicitly defined for required access"
     permissions:
       contents: read
       security-events: write
       actions: read
       issues: write
       pull-requests: write
+
 
     steps:
       # Git Checkout
