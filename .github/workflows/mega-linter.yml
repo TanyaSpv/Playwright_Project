@@ -7,7 +7,7 @@ name: MegaLinter
 # Pull Requests to main
 on:
   # Comment this line to trigger action only on pull-requests
-  # (not recommended if you don't pay for GH Actions)
+  # (n  ot recommended if you don't pay for GH Actions)
   push:
 
   pull_request:
@@ -40,10 +40,11 @@ jobs:
     name: MegaLinter
     runs-on: ubuntu-latest
 
-    # Give the default GITHUB_TOKEN write permission to commit and push, comment
-    # issues, and post new Pull Requests; remove the ones you do not need
+    # Specify minimum required permissions for this job
     permissions:
-      contents: write
+      contents: read
+      security-events: write
+      actions: read
       issues: write
       pull-requests: write
 
